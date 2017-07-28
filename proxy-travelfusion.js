@@ -5,13 +5,13 @@ const parser = require('xml2json');
 
 const searchHotelPromise = function (url, options) {
     return new Promise(function(resolve, reject){
-        httpreq.post(url, options, function (err, res){
+        httpreq.post('http://api.travelfusion.com/api-v2/', options, function (err, res){
             if (err) {
                 return reject(err);
             }
-            console.log('====================================');
-            console.log(res);
-            console.log('====================================');
+            // console.log('====================================');
+            // console.log(res);
+            // console.log('====================================');
 
             if(res.statusCode != 200) console.log('Problem occurs!')
 
