@@ -1,0 +1,8 @@
+{
+    "travelfusion": {
+        "hotels": {
+            "apiEndpoint": "http://api.travelfusion.com/api-v2/",
+            "token": "TvLwDF_pxUECUxcEXUaHDm06Mp7jIB6nTY3DqzeEJ6NG"
+        }
+    }
+}
