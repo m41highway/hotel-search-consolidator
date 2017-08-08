@@ -8,7 +8,8 @@ const getMomentDate = function (date) {
     return moment([year, month, day]);
 }
 
-const generateSearchOption = function (checkin, checkout, city) {
+const generateSearchOption = function (checkin, checkout, city, currency) {
+    console.log('Checking date:' + checkin);
     const options = {
         body: `<GetHotelsRequest token="${config.travelfusion.hotels.token}" xmlns="http://www.travelfusion.com/xml/api/simple">` +
             '<location>' +
@@ -18,7 +19,7 @@ const generateSearchOption = function (checkin, checkout, city) {
             // `<locationResolutionResultItem id="6296599"/>` +  // LCY
             '</location>' +
             // `<radius>3000</radius>` +        // in metres. If omitted, default logic will be used.
-            `<date>2017-09-10</date>` +
+            `<date>${checkin}</date>` +
             `<duration>2</duration>` +
             '<rooms>' +
                 '<room>' +
@@ -30,7 +31,7 @@ const generateSearchOption = function (checkin, checkout, city) {
                     '</ages>' +
                 '</room>' +
             '</rooms>' +
-            `<currency>HKD</currency>` +
+            `<currency>${currency}</currency>` +
             //<!-- special parameters may be necessary in certain special cases. Please discuss with Travelfusion if you feel that you need to submit any extra information such as personal logins to supplier systems -->
             // '<specialParameters>' +
             //     `<parameter type="supplier" name="_supplier_name_._param_name_">__some_value__</parameter>` +
