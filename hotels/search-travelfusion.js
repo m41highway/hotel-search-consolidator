@@ -3,13 +3,13 @@ const proxy = require('../proxy-travelfusion');
 const config = require('../config.json');
 const helper = require('../travelfusion-request-helper');
 
-const search = async function (checkin, checkout, city, latitude, longitude, currency, adultCount, childCount) {
+const search = async function (checkin, checkout, city, latitude, longitude, currency, adultCount, childCount, budget) {
 
     let duration = helper.getMomentDate(checkout).diff(helper.getMomentDate(checkin), 'days');
 
     let res = await proxy.searchHotelPromise(config.travelfusion.hotels.apiEndpoint,
         helper.generateSearchOption(
-            checkin, checkout, duration, city, latitude, longitude, currency, adultCount, childCount
+            checkin, checkout, duration, city, latitude, longitude, currency, adultCount, childCount, budget
         ));
 
     let jsonObj = JSON.parse(res.body);
@@ -24,6 +24,9 @@ const search = async function (checkin, checkout, city, latitude, longitude, cur
 
     const options3 = {
         body: `<GetHotelsRequest sid="${jsonObj.GetHotelsResponse.sid}" token="${config.travelfusion.hotels.token}" xmlns="http://www.travelfusion.com/xml/api/simple">` +
+            '<filters>' +
+            `<filter code="priceMax" currency="${currency}">${budget}</filter>` +
+            '</filters>' +
             '</GetHotelsRequest>',
         headers: {
             'Content-Type': 'text/xml; charset=utf-8',
@@ -54,29 +57,37 @@ const search = async function (checkin, checkout, city, latitude, longitude, cur
 
     // });
 
-    let summary = hotels.map(function (hotel){
+    let summary = hotels ? hotels.map(function (hotel){
         return {
             hotelName: hotel.hotelDetails.hotelName,
+            address: hotel.hotelDetails.address,
+            latitude: hotel.hotelDetails.coordinate.lat,
+            longitude: hotel.hotelDetails.coordinate.lon,
+            description: hotel.hotelDetails.description,
             starRating: hotel.hotelDetails.starRating,
             thumbnail: hotel.hotelDetails.thumbnail,
             offers: hotel.offers.offer.map(function (offer) {
                 return {
                     id: offer.id,
-                    price: offer.price,
+                    priceCurrency: offer.price.currency,
+                    priceAmount: offer.price.$t,
                     roomtypes: offer.roomtypes,
-                    rooms: offer.rooms,
-                    billingPrice: offer.billingPrice,
-                    supplier: offer.supplier,
+                    roomsDesc: offer.rooms.room.type,
+                    roomsType: offer.rooms.room.tfType,
+                    roomTypeExtraInfo: offer.rooms.room.extraInfos,
+                    billingPriceCurrency: offer.billingPrice.currency,
+                    billingPriceAmount: offer.billingPrice.$t,
+                    // supplier: offer.supplier,  // don't need to disclose
                     extraInfos: offer.extraInfos
                 }
             })
         }
-    })
+    }) : {};
 
     const result = {
         cookies: res.cookies, // for following call
         seachCriteria: {
-            checkin, checkout, city, latitude, longitude, currency, adultCount, childCount
+            checkin, checkout, city, latitude, longitude, currency, adultCount, childCount, budget
         },
         summary: summary,
     }

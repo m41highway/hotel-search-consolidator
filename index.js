@@ -31,9 +31,10 @@ router.post('/hotels/search', async function (ctx) {
     const currency = ctx.request.body.currency; // 'HKD'
     const adultCount = ctx.request.body.adultCount; // 4
     const childCount = ctx.request.body.childCount; // 1
+    const budget = ctx.request.body.budget;
 
     let res = await Promise.all([
-        travelfusion.search(checkin, checkout, city, latitude, longitude, currency, adultCount, childCount)
+        travelfusion.search(checkin, checkout, city, latitude, longitude, currency, adultCount, childCount, budget)
     ]);
 
     console.log('------------------------------------------');
