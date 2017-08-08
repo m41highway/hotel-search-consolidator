@@ -24,9 +24,10 @@ router.post('/hotels/search', async function (ctx) {
     const city = ctx.request.body.city; //'HKG';
     const checkin = ctx.request.body.checkin; //'2017-08-10';
     const checkout = ctx.request.body.checkout; //'2017-08-13';
+    const currency = ctx.request.body.currency;
 
     let res = await Promise.all([
-        travelfusion.search(checkin, checkout, city)
+        travelfusion.search(checkin, checkout, city, currency)
     ]);
 
     console.log('------------------------------------------');
@@ -35,6 +36,7 @@ router.post('/hotels/search', async function (ctx) {
     // let jsonObj = JSON.parse(res.body);
     // console.log(jsonObj);
 
+    ctx.body = res;
 })
 
 

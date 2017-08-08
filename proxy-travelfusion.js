@@ -27,6 +27,13 @@ const searchHotelPromise = function (url, options) {
     });
 }
 
+const delay = function (t) {
+   return new Promise(function(resolve) {
+       setTimeout(resolve, t)
+   });
+}
+
 module.exports = {
     searchHotelPromise: searchHotelPromise,
+    delay, delay
 }
