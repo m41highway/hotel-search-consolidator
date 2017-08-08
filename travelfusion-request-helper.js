@@ -8,28 +8,36 @@ const getMomentDate = function (date) {
     return moment([year, month, day]);
 }
 
-const generateSearchOption = function (checkin, checkout, city, currency) {
-    console.log('Checking date:' + checkin);
+const generateSearchOption = function (checkin, checkout, duration, city, currency, adultCount, childCount) {
+
+    let adults = '';
+    let children = '';
+
+    for (let i=0; i < adultCount; i++) {
+        adults = adults +  '<age>30</age>';
+    }
+
+    for (let j=0; j < childCount ; j++) {
+        children = children + '<age>3</age>';
+    }
+
+    const guestAges = `<ages>${adults}${children}</ages>`;
+
+    console.log('guestAges', guestAges);
+
     const options = {
         body: `<GetHotelsRequest token="${config.travelfusion.hotels.token}" xmlns="http://www.travelfusion.com/xml/api/simple">` +
             '<location>' +
-            `<airport code="HKG"/>` +
+            `<airport code="${city}"/>` +
             //`<hotel code="00005gaw87"/>` +
             //`<coordinate lat="0.34234" lon="65.283"/>` +
             // `<locationResolutionResultItem id="6296599"/>` +  // LCY
             '</location>' +
             // `<radius>3000</radius>` +        // in metres. If omitted, default logic will be used.
             `<date>${checkin}</date>` +
-            `<duration>2</duration>` +
+            `<duration>${duration}</duration>` +
             '<rooms>' +
-                '<room>' +
-                    //<!-- The ages of the people that will be staying in the room -->
-                    '<ages>' +
-                    `<age>30</age>` +
-                    `<age>30</age>` +
-                    // `<age>1</age>` +
-                    '</ages>' +
-                '</room>' +
+                `<room>${guestAges}</room>` +
             '</rooms>' +
             `<currency>${currency}</currency>` +
             //<!-- special parameters may be necessary in certain special cases. Please discuss with Travelfusion if you feel that you need to submit any extra information such as personal logins to supplier systems -->

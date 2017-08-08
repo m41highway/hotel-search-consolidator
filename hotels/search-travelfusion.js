@@ -3,11 +3,14 @@ const proxy = require('../proxy-travelfusion');
 const config = require('../config.json');
 const helper = require('../travelfusion-request-helper');
 
-const search = async function (checkin, checkout, city, currency) {
+const search = async function (checkin, checkout, city, currency, adultCount, childCount) {
 
     let duration = helper.getMomentDate(checkout).diff(helper.getMomentDate(checkin), 'days');
 
-    let res = await proxy.searchHotelPromise(config.travelfusion.hotels.apiEndpoint, helper.generateSearchOption(checkin, checkout, city, currency));
+    let res = await proxy.searchHotelPromise(config.travelfusion.hotels.apiEndpoint,
+        helper.generateSearchOption(
+            checkin, checkout, duration, city, currency, adultCount, childCount
+        ));
 
     let jsonObj = JSON.parse(res.body);
 

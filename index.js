@@ -24,10 +24,12 @@ router.post('/hotels/search', async function (ctx) {
     const city = ctx.request.body.city; //'HKG';
     const checkin = ctx.request.body.checkin; //'2017-08-10';
     const checkout = ctx.request.body.checkout; //'2017-08-13';
-    const currency = ctx.request.body.currency;
+    const currency = ctx.request.body.currency; // 'HKD'
+    const adultCount = ctx.request.body.adultCount; // 4
+    const childCount = ctx.request.body.childCount; // 1
 
     let res = await Promise.all([
-        travelfusion.search(checkin, checkout, city, currency)
+        travelfusion.search(checkin, checkout, city, currency, adultCount, childCount)
     ]);
 
     console.log('------------------------------------------');
