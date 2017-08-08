@@ -3,21 +3,21 @@ const proxy = require('../proxy-travelfusion');
 const config = require('../config.json');
 const helper = require('../travelfusion-request-helper');
 
-const search = async function (checkin, checkout, city, currency, adultCount, childCount) {
+const search = async function (checkin, checkout, city, latitude, longitude, currency, adultCount, childCount) {
 
     let duration = helper.getMomentDate(checkout).diff(helper.getMomentDate(checkin), 'days');
 
     let res = await proxy.searchHotelPromise(config.travelfusion.hotels.apiEndpoint,
         helper.generateSearchOption(
-            checkin, checkout, duration, city, currency, adultCount, childCount
+            checkin, checkout, duration, city, latitude, longitude, currency, adultCount, childCount
         ));
 
     let jsonObj = JSON.parse(res.body);
 
-    let result = {
-        body: jsonObj,
-        cookies: res.cookies
-    }
+    // let result = {
+    //     body: jsonObj,
+    //     cookies: res.cookies
+    // }
 
     // return result;
     await proxy.delay(5000);
@@ -64,15 +64,23 @@ const search = async function (checkin, checkout, city, currency, adultCount, ch
                     id: offer.id,
                     price: offer.price,
                     roomtypes: offer.roomtypes,
-                    rooms: offer.rooms
+                    rooms: offer.rooms,
+                    billingPrice: offer.billingPrice,
+                    supplier: offer.supplier,
+                    extraInfos: offer.extraInfos
                 }
             })
         }
     })
 
-
-
-    return summary;
+    const result = {
+        cookies: res.cookies, // for following call
+        seachCriteria: {
+            checkin, checkout, city, latitude, longitude, currency, adultCount, childCount
+        },
+        summary: summary,
+    }
+    return result;
 }
 
 module.exports = {

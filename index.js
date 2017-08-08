@@ -21,7 +21,11 @@ router.get('/', async function (ctx){
 
 router.post('/hotels/search', async function (ctx) {
 
+    // Either city of lat/long should be used
+
     const city = ctx.request.body.city; //'HKG';
+    const latitude = ctx.request.body.latitude;
+    const longitude = ctx.request.body.longitude;
     const checkin = ctx.request.body.checkin; //'2017-08-10';
     const checkout = ctx.request.body.checkout; //'2017-08-13';
     const currency = ctx.request.body.currency; // 'HKD'
@@ -29,7 +33,7 @@ router.post('/hotels/search', async function (ctx) {
     const childCount = ctx.request.body.childCount; // 1
 
     let res = await Promise.all([
-        travelfusion.search(checkin, checkout, city, currency, adultCount, childCount)
+        travelfusion.search(checkin, checkout, city, latitude, longitude, currency, adultCount, childCount)
     ]);
 
     console.log('------------------------------------------');
